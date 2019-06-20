@@ -258,7 +258,8 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  int xIsPos = ((x>>31) ^ -1) & 1;
+  int minus1 = ~0;
+  int xIsPos = ((x>>31) ^ minus1) & 1;
   int haveAnyBit = (~((~x + 1) >> 31)) & 1;
 
   return xIsPos & haveAnyBit;
@@ -307,7 +308,7 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  return 0;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
