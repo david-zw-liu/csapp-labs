@@ -143,9 +143,9 @@ NOTES:
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  return ~(~(~x & y) & ~(x & ~y));
 }
-/* 
+/*
  * tmin - return minimum two's complement integer 
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 4
@@ -153,7 +153,7 @@ int bitXor(int x, int y) {
  */
 int tmin(void) {
 
-  return 2;
+  return 1 << 31;
 
 }
 //2
@@ -165,7 +165,12 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 2;
+  int minus1 = ~0;
+  int xIsMinus1 = !(x^minus1);
+  int tMin = x + 1;
+  int tMax = x;
+
+  return !((tMin + tMax) ^ minus1) & !xIsMinus1;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -176,7 +181,12 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int mask = 0xAA;
+  mask = (mask << 8) + 0xAA;
+  mask = (mask << 8) + 0xAA;
+  mask = (mask << 8) + 0xAA;
+
+  return !((x & mask) ^ mask);
 }
 /* 
  * negate - return -x 
@@ -186,7 +196,7 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return ~x + 1;
 }
 //3
 /* 
@@ -199,7 +209,15 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  int minus0x30, num, minus10, isGreaterThan0, isLessThan10;
+  minus0x30 = ~(0x30) + 1;
+  num = x + minus0x30;
+  minus10 = ~(0xA) + 1;
+
+  isGreaterThan0 = !(num >> 31); // means that num is positive
+  isLessThan10 = !!((num + minus10) >> 31); // means that num - 10 is negative
+
+  return isGreaterThan0 & isLessThan10;
 }
 /* 
  * conditional - same as x ? y : z 
