@@ -238,7 +238,15 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int isSame, xSign, ySign, sameSign, negY, isLess;
+  isSame = !(x^y);
+  xSign = !!(x>>31);
+  ySign = !!(y>>31);
+  negY = ~y + 1;
+  sameSign = !(xSign ^ ySign);
+
+  isLess = (!sameSign & !ySign) | (sameSign & !!((x + negY) >> 31));
+  return isSame | isLess;
 }
 //4
 /* 
