@@ -227,7 +227,8 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int minus1 = ~1 + 1;
+  return ((!x + minus1) & y) | ((!!x + minus1) & z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
