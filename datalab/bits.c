@@ -340,7 +340,39 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  int signMask, expMask, fractionMask, sign, exp, fraction, outOfRange, bigE, intBits;
+  expMask = 0xFF << 23;
+  signMask = 1 << 31;
+  fractionMask = (~0) & ~signMask & ~expMask ;
+  outOfRange = (1 << 31);
+  
+  sign = (uf & signMask) >> 31;
+  exp  = (uf & expMask) >> 23;
+  fraction = uf & fractionMask;
+
+  if (exp == 0xFF) { // Special
+    return outOfRange; // Infinite or NaN
+  } 
+
+  if (!exp) { // Denomalized
+    return 0;
+  }
+
+  // normal
+  intBits = (1<<23) | fraction;
+  bigE = (exp - 127);
+  if(bigE < 0) {
+    return 0;
+  } else if (bigE <= 23) {
+    intBits = intBits >> (23 - bigE);
+  } else if (bigE <= 31) {
+    intBits = intBits << (bigE - 23);
+  } else {
+    return outOfRange;
+  }
+
+  if (sign) return ~intBits + 1; // negative
+  return intBits;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
