@@ -388,5 +388,20 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  unsigned inf, temp;
+  int exp;
+
+  inf = 0xFF << 23;
+  exp = x + 127;
+
+  // denormalized
+  if (x < (-126 - 23)) return 0;
+  if (x < -126) {
+    temp = 1 << 22; // x^-127
+    return temp >> -127 - x;
+  }
+
+  // normalize or infinite
+  if (exp >= 0xFF)  return inf;
+  return exp << 23;
 }
