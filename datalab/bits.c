@@ -308,7 +308,24 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 0;
+  int signMask, expMask, fractionMask, sign, exp, fraction;
+  expMask = 0xFF << 23;
+  signMask = 1 << 31;
+  fractionMask = (~0) & ~signMask & ~expMask ;
+  
+  sign = (uf & signMask) >> 31;
+  exp  = (uf & expMask) >> 23;
+  fraction = uf & fractionMask;
+
+  if (exp == 0xFF) { // Special
+    return uf; // Infinite or NaN
+  } 
+
+  if (!exp) { // Denomalized
+    return (sign << 31) | (fraction << 1);
+  }
+
+  return (sign << 31) | ((exp+1) << 23) | fraction;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
